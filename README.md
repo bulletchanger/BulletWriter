@@ -2,6 +2,7 @@
 
 This project helps Air Force personnel write EPR and awards packages "bullets" (one-line narratives) by making changes, substitutions, or suggestions to the bullet.  The AF requires these bullets not exced a single line, and the unwritten rule of allowing minimal white space creates a dilemma where the most accurate word is substituted for the best fitting word.  This tool aims to assist the writer by using varius techniques to quickly find the best way to shorten or lengthen a bullet and make it fit.
 
+See www.bulletchanger.com for current example of site.
 
 Project Planning requirements:
 Requirement #1.) Portability: Status = Complete. The solution must maximize portability in order to provide ubiquitous access to the solution. Air Force members have
