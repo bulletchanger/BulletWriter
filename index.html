@@ -1,0 +1,535 @@
+<body onload="lengthCalc()"></body>
+<div class="container">
+<b>Type your input bullet here:</b>
+<input type="text" id="bullet" value="- Authored bullet formatting website; saved Air Force members 23 percent evaluation writing time; Commander impressed with time management skills" oninput="lengthCalc()" maxlength="2500" size="140" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+Current bullet is: <b><span id="currentlength">0</span></b>% of an EPR
+<br><br><br>
+<b>--- SpacedOut Module---</b>
+With thin or thick spaces, this bullet could be between: <b><span id="minimizedLength">0</span></b>% to <b><span id="maximizedLength">0</span></b>%
+Below is your modified bullet with thick or thin spaces, which is <b><span id="spacedOutBulletValue">0</span></b>% of an EPR.
+<input type="text" id="modifiedBullet" maxlength="200" size="140">
+<button id="copymodifiedbullet" onclick="copymodifiedbullet()"><b>Copy modified bullet</b></button>
+<br>
+<b>--- suggestSubs Module---</b>
+The following words can be substituted: <br>
+<span id="subsLinks">nothing to substitute yet</span>
+
+</div>
+<!-- Above HTML posted on the WordPress page-->
+
+<!-- Below Javascript posted on the "Settings > Insert Headers and Footers" page-->
+<script>
+var bulletsplit
+var rawbulletlength
+var calcBulletLength
+var modifiedBulletLength
+var modifiedBullet
+var rawBullet
+
+function lengthCalc(){
+    calcBulletLength = 0
+    var rawBullet = document.getElementById("bullet").value;
+    rawbulletlength = rawBullet.length;
+    //console.log("the variable named rawBullet is currently:  " + rawBullet);
+    bulletsplit = rawBullet.split("");
+    //console.log("the variable named bulletsplit is currently:  " + bulletsplit);
+    calcBulletLength = stringValue(rawBullet)
+    //console.log("calcBulletLength is: " + calcBulletLength);
+    document.getElementById('currentlength').textContent = (calcBulletLength/8.6).toFixed(2);
+
+    spacedOut();
+    suggestSubs();
+}
+
+function letterValue(str) {
+    var anum = {
+        "a": 8, "b": 9, "c": 8, "d": 9, "e": 8, "f": 6, "g": 9, "h": 9, "i": 5, "j": 5, 
+        "k": 9, "l": 5, "m": 14, "n": 9, "o": 9, "p": 9,"q": 9, "r": 6, "s": 7, "t": 5, 
+        "u": 9, "v": 9, "w": 13, "x": 9, "y": 9, "z": 8, "A": 13, "B": 12, "C": 12, "D": 13, 
+        "E": 11, "F": 10, "G": 10, "H": 13, "I": 6, "J": 7, "K": 13, "L": 11, "M": 16, 
+        "N": 13, "O": 13, "P": 10, "Q": 13, "R": 12, "S": 10, "T": 11, "U": 13, "V": 13, 
+        "W": 17, "X": 13, "Y": 13, "Z": 11, "1": 9, "2": 9, "3": 9, "4": 9, "5": 9,"6": 9, 
+        "7": 9, "8": 9, "9": 9, "0": 9, "-": 6, ".": 4.5, " ": 4.5, ";": 5, ":": 5, "'": 3.25, "=": 10,
+        "%": 15, "&": 14, "$": 9, "/": 5, "<": 10, ">": 10, "\\": 5, "?": 8, ",": 4.5, "!": 6,
+        "(": 6, ")": 6,
+        "#": 9, "\u2003": 18, "\u3000": 18, "\u2007": 9, "\u2002": 9, "\u2008": 4.5, "\u2004": 6, "\u2009": 3.625, "\u2006": 3, "\u200a": 1.5,
+        }
+        if (str.length == 1) return anum[str];
+    };
+
+function stringValue(word) {
+    var wholeValue = 0
+    for (var key in word) {
+        wholeValue += letterValue(word[key])
+    }
+    return wholeValue
+}
+
+function spaceChars() {
+    var anum = {
+        "\u2003": 18, "\u3000": 18, "\u2007": 9, "\u2002": 9, "\u2008": 4.5, "\u2004": 6, "\u2009": 3.625, "\u2006": 3, "\u200a": 1.5,
+    }
+}
+
+function spacedOut(){
+    var spacesInBullet = new Array()
+    var calcSpacesLength = 0
+    
+    var spacesInChars = ["\u0020", "\u2003", "\u3000", "\u2007", "\u2002", "\u2008", "\u2004", "\u2009", "\u2006", "\u200a"]
+    for (i = 0; i <= rawbulletlength-1; i++) {
+        if (spacesInChars.includes(bulletsplit[i]))
+        {spacesInBullet.push(i)}
+    };
+
+    //tabulate current spaces value 
+    for (i = 0; i <= rawbulletlength-1; i++) {
+        if (spacesInBullet.includes(i))
+        {calcSpacesLength += letterValue(bulletsplit[i])}
+    }
+    
+    calcSpacesMin = spacesInBullet.length*3.625
+    calcBulletMin = calcBulletLength+calcSpacesMin-calcSpacesLength
+    //console.log("calcBulletMin is: " + calcBulletMin + " calcSpacesMin is: " + calcSpacesMin)
+    document.getElementById('minimizedLength').textContent = (calcBulletMin/8.6).toFixed(2)
+
+    calcSpacesMax = spacesInBullet.length*6
+    calcBulletMax = calcBulletLength+calcSpacesMax-calcSpacesLength
+    //console.log("calcBulletMax is: " + calcBulletMax + " calcSpacesMax is: " + calcSpacesMax)
+    document.getElementById('maximizedLength').textContent = (calcBulletMax/8.6).toFixed(2)
+
+
+    //replace spaces with shorter spaces
+    modifiedBullet = bulletsplit
+    modifiedBulletLength = modifiedBullet.length
+    let spacedOutBulletValue = 0
+    //console.log(calcBulletLength)
+
+    if (calcBulletLength <= 860) {/*console.log("we are lengthening")*/ + lengthen()}
+    else {console.log("we are shortening") + shorten()}
+
+    function lengthen() {
+        //console.log("executing the lengthen function; calcBulletLength is: " + calcBulletLength)
+        for (i = 0; i <=modifiedBulletLength-1; i++) {
+            if (spacedOutBulletValue >= 858.5) {break}
+            if (modifiedBullet[i] == "\u0020") {modifiedBullet[i] = "\u2004"};
+            for (j = 0; j <=modifiedBulletLength-1; j++) {
+                spacedOutBulletValue += letterValue(modifiedBullet[j]);
+            }
+            spacedOutBulletValue = 0
+            for (j = 0; j <=modifiedBulletLength-1; j++) {
+                spacedOutBulletValue += letterValue(modifiedBullet[j]);
+            }
+        }
+    }
+
+    function shorten() {
+        console.log("the shorten function is running")
+        for (i = 0; i <=modifiedBulletLength-1; i++) {
+            spacedOutBulletValue = 0
+            if (spacedOutBulletValue >= 860) {break} //the <= is preventing calculation of ?
+            if (modifiedBullet[i] == "\u0020") {modifiedBullet[i] = "\u2009"};
+            for (j = 0; j <=modifiedBulletLength-1; j++) {
+                spacedOutBulletValue += letterValue(modifiedBullet[j]);
+            }
+            spacedOutBulletValue = 0
+            for (j = 0; j <=modifiedBulletLength-1; j++) {
+                spacedOutBulletValue += letterValue(modifiedBullet[j]);
+            }
+        }
+    }
+
+    //console.log("spacedOutBulletValue is: " + spacedOutBulletValue)
+    //combine
+    var spacedOutBullet = modifiedBullet.join('')
+
+    document.getElementById('spacedOutBulletValue').textContent = (spacedOutBulletValue/8.6).toFixed(2);
+    if (spacedOutBulletValue >860) {document.getElementById('spacedOutBulletValue').style.color = "red";}
+    else {document.getElementById('spacedOutBulletValue').style.color = "green";}
+    document.getElementById('modifiedBullet').value = spacedOutBullet;
+
+}
+
+function copymodifiedbullet() {
+    //Get the text field
+    var copyText = document.getElementById("modifiedBullet");
+    // Select the text field
+    copyText.select();
+    // Copy the text inside the text field
+    document.execCommand("copy");
+    //alert("Copied the text: " + copyText.value);
+    }
+
+
+function suggestSubs() {
+    // determine total change needed, going for 859, based upon calcBulletLength : add adjustable bar here later
+    changeNeeded = 859 - calcBulletLength;
+    //console.log("suggestSubs is running, and changeNeeded is: " + changeNeeded);
+
+    var rawBullet = document.getElementById("bullet").value
+    var subsMatches = new Array()
+    var letters = [
+        "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o",
+        "p","q", "r", "s", "t", "u", "v", "w", "x", "y", "z", "A", "B", "C", "D", "E", "F",
+        "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V",
+        "W", "X", "Y", "Z", "'"
+    ]
+    var subsList = {
+        // must write all words on left side as lowercase due to the ".toLowerCase" function below
+        "account": "acct",
+        "additional": "add'l",
+        "administrator": "admin",
+        "advance": "adv",
+        "advanced": "adv'd",
+        "aerovac": "AE",
+        "aircraft": "acft",
+        "airfield": "afld",
+        "airlift": "alft",
+        "Airman": "amn",
+        "ammunition": "ammo",
+        "and": "&",
+        "and": "/",
+        "anniversary": "anniv",
+        "appointment": "appt",
+        "approximately": "approx",
+        "Article": "Art",
+        "assistant": "asst",
+        "association": "assoc",
+        "augmenter": "aug",
+        "augmentee": "aug",
+        "authority": "auth",
+        "average": "avg",
+        "award": "awd",
+        "between": "btwn",
+        "billion": "B",
+        "board": "brd",
+        "branch": "Br",
+        "brief": "brf",
+        "briefing": "brfg",
+        "building": "bldg",
+        "Captain": "Capt",
+        "cargo": "cgo",
+        "capabilities": "capes",
+        "center": "cntr",
+        "central": "cntrl",
+        "certification": "cert",
+        "certified": "cert'd",
+        "chaplain": "chap",
+        "chapter": "chap",
+        "checklist": "cklst",
+        "chief": "Ch",
+        "committee": "cmte",
+        "communications": "comm",
+        "configuration": "config",
+        "configured": "config'd",
+        "contract": "kt",
+        "contracts": "kts",
+        "control": "cntrl",
+        "coordinate": "coord",
+        "command": "cmd",
+        "commands": "cmds",
+        "coordinate": "coord",
+        "coordinated": "coord'd",
+        "civilian": "civ",
+        "civilians": "civs",
+        "combat": "cmbt",
+        "commanded": "cmd'd",
+        "commander": "CC",
+        "command": "cmd",
+        "co-pilot": "c-plt",
+        "course": "crs",
+        "critical": "crit",
+        "cryogenic": "cryo",
+        "decoration": "dec",
+        "defense": "def",
+        "deliver": "dlvr",
+        "delivered": "dlvr'd",
+        "deupty": "Dep",
+        "department": "dept",
+        "detachment": "Det",
+        "developed": "dvlpd",
+        "discrepancy": "discrep",
+        "distribution": "distro",
+        "distributed": "distro'd",
+        "division": "Div",
+        "deployed": "dply'd",
+        "deployment": "dplymt",
+        "development": "dvlpmnt",
+        "education": "educ",
+        "eliminated": "elim'd",
+        "emergency": "emer",
+        "engine": "eng",
+        "engineer": "engr",
+        "enlisted": "enl",
+        "equipment": "eqpmt",
+        "evacuation": "evac",
+        "evaluation": "eval",
+        "excellent": "exc",
+        "executive": "exec",
+        "exercise": "ex",
+        "experience": "exp",
+        "fabrication": "fab",
+        "fabricated": "fab'd",
+        "facility": "fac",
+        "facilities": "facs",
+        "familiarization": "fam",
+        "feet": "ft",
+        "fighter": "ftr",
+        "figure": "fig",
+        "flight": "flt",
+        "Flight": "Flt",
+        "Flight&nbspCommander": "Flt/CC",  //not quite working
+        "gallons": "gals",
+        "generator": "gen",
+        "generated": "gen'd",
+        "government": "gov't",
+        "greater&nbspthan": ">",
+        "ground": "gnd",
+        "group": "gp",
+        "Group": "Gp",
+        "Group&nbspCommander": "Gp/CC",  //not quite working
+        "graduate": "grad",
+        "graduated": "grad'd",
+        "headquarters": "HQ",  //extra
+        "high&nbsppriority": "hi-pri",
+        "high&nbspvisibility": "hi-vis",  //not
+        "hospital": "hosp",
+        "hours": "hrs",
+        "increase": "incr",
+        "increased": "incr'd",
+        "identification": "ID",
+        "identified": "ID'd",
+        "indocrination": "indoc",
+        "information": "info",
+        "inspection": "insp",
+        "inspected": "insp'd",
+        "instructor": "instr",
+        "instructed": "instr'd",
+        "intelligence": "intel",
+        "introduction": "intro",
+        "international": "int'l",
+        "joint": "Jt",
+        "junior": "jr",
+        "joint&nbspbase": "JB",
+        "kilometer": "km",
+        "kilometers": "kms",
+        "laboratory": "lab",
+        "large": "lrg",
+        "largest": "lrgst",
+        "leader": "ldr",
+        "leadership": "ldrship",
+        "less&nbspthan": "<",  //not working
+        "letter": "ltr",
+        "level": "lvl",
+        "lieutenant": "Lt",
+        "load": "ld",
+        "loadmaster": "LM",
+        "logistics": "log",
+        "maintenance": "mx",
+        "manage": "mng",
+        "managed": "mng'd",
+        "management": "mgt",
+        "manger": "mgr",
+        "maximum": "max",
+        "maximized": "max'd",
+        "medical": "med",
+        "medical&nbspevacuation": "medevac",
+        "member": "mbr",
+        "membership": "mbrshp",
+        "mile": "mi",
+        "military": "mil",
+        "million": "M",
+        "minimum": "min",
+        "mission" : "msn",        
+        "missions": "msns",
+        "mission&nbspcommander": "Msn/CC",  // not working
+        "mobility": "mob",
+        "month": "mo",
+        "months": "mos",
+        "monthly": "mnthly",
+        "movement": "mvmt",
+        "multinational": "multinat'l",
+        "multiservice": "multisvc",
+        "munitions": "muns",
+        "national": "nat'l",
+        "navigation": "nav",
+        "negative": "neg",
+        "network": "ntwk",
+        "nominee": "nom",
+        "nuclear": "nuke",
+        "number": "#",
+        "objective": "obj",
+        "office": "ofc",
+        "officer": "ofcr",
+        "operation": "op",
+        "operations": "ops",
+        "operations&nbspofficer": "Ops&nbspO", //not working
+        "operations&nbspplan": "OPLAN",
+        "organization": "org",
+        "organized": "org'd",
+        "package": "pkg",
+        "pediactrics": "Peds",
+        "percent": "%",
+        "pounds": "lbs",
+        "passengers": "pax",
+        "pieces": "pcs",
+        "program": "prgm",
+        "plan": "pln",
+        "planned": "pln'd",
+        "planning": "plng",
+        "planner": "plnr",
+        "pilot": "plt",
+        "population": "pop",
+        "position": "posn",
+        "practice": "prac",
+        "preparation": "prep",
+        "president": "pres",
+        "professional": "pro",
+        "project": "proj",
+        "project&nbspofficer": "PROJO",
+        "personnel": "prsnl",
+        "personnel": "pers",
+        "patient": "pt",
+        "publication": "pub",
+        "publications": "pubs",
+        "power": "pwr",
+        "qualification": "qual",
+        "qualification": "quals",
+        "qualified": "qual'd",
+        "quarter": "qtr",
+        "quarterly": "qtrly",
+        "rating": "rtg",
+        "ready": "rdy",
+        "readied": "rdy'd",  //extra
+        "received": "rcv'd",
+        "reconnaissance": "recon",
+        "refurbish": "refurb",
+        "refurbished": "refurb'd",
+        "requalification": "requal",
+        "requalified": "requal'd",   //extra
+        "requirements": "rqmts",
+        "repairs": "rprs",
+        "representative": "rep",
+        "representatives": "reps",
+        "resolution": "res",
+        "response": "resp",
+        "return": "rtn",
+        "runway": "rwy",
+        "savings": "svgs",
+        "schedule": "sched",
+        "select": "sel",
+        "selected": "sel'd",
+        "senior": "sr",
+        "sergeant": "Sgt",
+        "service": "svc",
+        "services": "svcs",
+        "simulator": "sim",
+        "special&nbspops": "Spec&nbspOps",
+        "specification": "spec",
+        "specifications": "specs",
+        "squadron": "Sq",
+        "squadron&nbspcommander": "Sq/CC",
+        "squadron&nbspdeputy&nbspCC": "Sq/CD",  //not working
+        "squadron&nbspops&nbspofficer": "Sq/DO",  //not working
+        "square": "sq",
+        "standard": "std",
+        "standardization": "stan",
+        "superintendent": "supt",
+        "supervisor": "supv",
+        "support": "spt",
+        "surgery": "surg",
+        "surgical": "surg",
+        "synchronize": "sync",
+        "synchronized": "sync'd",
+        "system": "sys",
+        "tanker": "tnkr",
+        "tactical": "tac",
+        "target": "tgt",
+        "taxiway": "txwy",
+        "team": "tm",
+        "technical&nbsporder": "TO",
+        "technician": "tech",
+        "technology": "tech",
+        "thousand": "K",
+        "through": "thru",
+        "trained": "trnd",
+        "training": "trng",
+        "transportation": "trans",
+        "transported": "transp'd",
+        "twice": "x2",
+        "twice": "2x",
+        "utilization": "ute",
+        "vehicle": "veh",
+        "versus": "vs",
+        "veteran": "vet",
+        "visibility": "vis",
+        "volunteer": "vol",
+        "volunteered": "vol'd",
+        "warehouse": "whse",
+        "weapons": "wpns",
+        "weather": "wx",
+        "weekly": "wkly",
+        "week": "wk",
+        "weeks": "wks",
+        "wing": "wg",
+        "with": "w/",
+        "without": "w/o",
+        "year": "yr",
+        "zulu": "Z",
+        "ed ": "'d "
+    }
+
+    var rawBulletWords = []
+    parseIntoWords();
+    //console.log("rawBulletWords is currently: " + rawBulletWords)
+    function parseIntoWords () {
+        //parse into words, and populate the "rawBulletWords" array
+        var splitBullets = rawBullet.split(/\W+/);
+        rawBulletWords = splitBullets;
+    }
+
+    populateSubsMatches()     // look for subsList matches in rawBullet
+    function populateSubsMatches () {
+        //console.log("running the populateSubsMatches function")
+        for (var key in rawBulletWords) {
+            wordToMatch = rawBulletWords[key];
+            /* ADDING loLowercase */ wordToMatch = wordToMatch.toLowerCase();
+            //console.log("wordToMatch is: " + wordToMatch)
+            if (subsList[wordToMatch] === undefined) void(0) //console.log("that word did not match subsList")
+            else {subsMatches.push(wordToMatch)}
+                //console.log("added " + subsList[wordToMatch] + " to the subsMatches list!")}
+        }
+    }
+    console.log("subsMatches is: " + subsMatches)
+
+    let subsLinks = []
+    calculateSubsMatches()
+    function calculateSubsMatches () {
+        for (var key in subsMatches) {
+            var subsMatchValue = stringValue(subsMatches[key])
+            var subsMatchesPair = subsList[subsMatches[key]]
+            var subsMatchesPairValue = stringValue(subsMatchesPair)
+            var subsMatchesPairPredictedValue = calcBulletLength - subsMatchValue + subsMatchesPairValue
+            /*console.log("subsMatchesWord is: " + subsMatches[key] + ", its length is: " + subsMatchValue + " and it could be " + subsMatchesPairValue +
+            ", and the bullet will be... " + subsMatchesPairPredictedValue)*/
+            var sub = "replace <b>" + subsMatches[key] + "</b> with <b>" + subsMatchesPair + 
+                "</b> and the length will be <b>" + (subsMatchesPairPredictedValue/8.6).toFixed(2) + "%</b><br>"
+            subsLinks += sub
+
+        }
+
+    }
+    //publish the subsMatch objects
+    document.getElementById('subsLinks').innerHTML = subsLinks
+    //console.log("trying to publish the subsLinks variable to the HTML!")
+
+    // LEAVING OFF HERE trying to place above info into an array of objects to be placed on the page
+    // Place the subsMatchesInfo array into the webpage
+
+
+
+}
+
+
+</script>
+
+</html>
