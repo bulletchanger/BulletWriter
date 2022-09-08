@@ -1,5 +1,8 @@
-<body onload="lengthCalc()"></body>
-<div class="container">
+<!DOCTYPE html>
+<html>
+<body onload="lengthCalc()" style="background-color:lightgray;">
+<!--<div class="container">-->
+<h1>Home</h1>
 <b>Type your input bullet here:</b>
 <input type="text" id="bullet" value="- Created bullet formatting website; saved Air Force members 23 percent evaluation writing time; Commander impressed with time management skills" oninput="lengthCalc()" maxlength="2500" size="140" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
 Current bullet is: <b><span id="currentlength">0</span></b>% of an EPR
@@ -14,7 +17,7 @@ Below is your modified bullet with thick or thin spaces, which is <b><span id="s
 The following words can be substituted: <br>
 <span id="subsLinks">nothing to substitute yet</span>
 
-</div>
+<!--</div>-->
 <!-- Above HTML posted on the WordPress page-->
 
 <!-- Below Javascript posted on the "Settings > Insert Headers and Footers" page-->
@@ -531,5 +534,7 @@ function suggestSubs() {
 
 
 </script>
+
+</body>
 
 </html>
