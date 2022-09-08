@@ -3,6 +3,7 @@
 This project helps Air Force personnel write EPR and awards packages "bullets" (one-line narratives) by making changes, substitutions, or suggestions to the bullet.  The AF requires these bullets not exced a single line, and the unwritten rule of allowing minimal white space creates a dilemma where the most accurate word is substituted for the best fitting word.  This tool aims to assist the writer by using varius techniques to quickly find the best way to shorten or lengthen a bullet and make it fit.
 
 See www.bulletchanger.com for current example of site.
+
 See [test.bulletchanger.com](test.bulletchanger.com) for test site, hosted on Azure static web apps service.
 
 As with any software development project, possibilities are endless.  You can build endless modules to extend the functionality, and you can go about doing it in a variety of methods.  This site, much like its creator, will not succumb to scope creep.  Here, we explain the priorities of development on this site, in order to tackle them with diligence.
